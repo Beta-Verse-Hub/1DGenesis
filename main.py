@@ -4,13 +4,13 @@ import tkinter as tk
 
 # Constants
 CANVAS_HEIGHT : int = 500
-CANVAS_WIDTH : int = 500
+CANVAS_WIDTH : int = 700
+ELECTROSTATIC_CONSTANT : int = 9000000
 
 
 # Variables
 sim_time : float = 0
 update_interval : int = 10
-
 
 # Class for physical particles
 class Particles():
@@ -27,10 +27,13 @@ class Particles():
     def update_velocity(self):
         self.velocity += self.acceleration * update_interval/1000
 
+    def applied_force(self, other_particle_pos, other_particle_cha):
+        return (ELECTROSTATIC_CONSTANT*self.charge*other_particle_cha)*(self.x-other_particle_pos)/abs(self.x-other_particle_pos)**3
+
 
 # All the particles
-electron1 = Particles(0, 1, -1, velocity=100)
-proton1 = Particles(100, 100, 1, velocity=-100, acceleration=100)
+electron1 = Particles(0, 1, -1)
+proton1 = Particles(100, 100, 1)
 neutron1 = Particles(110, 100, 0)
 proton2 = Particles(-100, 100, 1)
 neutron2 = Particles(-110, 100, 0)
@@ -43,6 +46,13 @@ def update_all(root_display, canvas_display, time_display, particles_pos, partic
     global sim_time, update_interval
 
     canvas_display.delete("all")
+
+    for i in range(len(particles)):
+        net_force = 0
+        for j in range(len(particles)):
+            if j != i:
+                net_force += particles[i].applied_force(particles[j].x, particles[j].charge)
+        particles[i].acceleration = net_force/particles[i].mass
 
     for i in range(len(particles)):
         particles[i].update_velocity()
@@ -58,6 +68,8 @@ def update_all(root_display, canvas_display, time_display, particles_pos, partic
     particles_cha = [particles[x].charge for x in range(len(particles))]
 
     draw_particles(particles_pos, particles_cha, canvas_display)
+
+    print(particles[0].x, particles[1].x, particles[2].x, particles[3].x, particles[4].x)
 
     root_display.after(update_interval, update_all, root_display, canvas_display, time_display, particles_pos, particles_cha)
 
