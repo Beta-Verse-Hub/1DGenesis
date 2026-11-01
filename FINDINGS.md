@@ -13,12 +13,11 @@ Next I added velocity and acceleration to the particle class which are related t
 Next are the fundamental forces
 
 ### Electromagnetic
-Coulomb's law should be used here but since I am dealing with 1 Dimension, it must be modified
+Coulomb's law should be used here and since I am dealing with 1 Dimension, vectors aren't required rather scalar would work far better
 
 $F=k\frac{q_1q_2}{r^2}$
 
-where F is electrostatic force
-q is charge of the particle
-r is the distance between them
-and k is Coulomb's constant which is 8.99 * 10^9 N*m^2/C^2
-
+- F = electrostatic force
+- q = charge of the particle
+- r = distance between them
+- k = Coulomb's constant which is 8.99 * 10^9 N*m^2/C^2

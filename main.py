@@ -5,12 +5,13 @@ import tkinter as tk
 # Constants
 CANVAS_HEIGHT : int = 500
 CANVAS_WIDTH : int = 700
-ELECTROSTATIC_CONSTANT : int = 9000000
+ELECTROSTATIC_CONSTANT : int = 50000000
 
 
 # Variables
 sim_time : float = 0
-update_interval : int = 10
+update_interval : int = 1
+dt : float = 0.0001
 
 # Class for physical particles
 class Particles():
@@ -22,10 +23,10 @@ class Particles():
         self.charge : float = charge
 
     def update_position(self):
-        self.x += self.velocity * update_interval/1000
+        self.x += self.velocity * dt
 
     def update_velocity(self):
-        self.velocity += self.acceleration * update_interval/1000
+        self.velocity += self.acceleration * dt
 
     def applied_force(self, other_particle_pos, other_particle_cha):
         return (ELECTROSTATIC_CONSTANT*self.charge*other_particle_cha)*(self.x-other_particle_pos)/abs(self.x-other_particle_pos)**3
@@ -33,10 +34,10 @@ class Particles():
 
 # All the particles
 electron1 = Particles(0, 1, -1)
-proton1 = Particles(100, 100, 1)
-neutron1 = Particles(110, 100, 0)
-proton2 = Particles(-100, 100, 1)
-neutron2 = Particles(-110, 100, 0)
+proton1 = Particles(50, 100, 1)
+proton2 = Particles(-50, 100, 1)
+neutron1 = Particles(100, 100, 1)
+neutron2 = Particles(-100, 100, 1)
 
 particles = [electron1, proton1, proton2, neutron1, neutron2]
 
@@ -60,7 +61,7 @@ def update_all(root_display, canvas_display, time_display, particles_pos, partic
     for i in range(len(particles)):
         particles[i].update_position()
 
-    sim_time += update_interval/1000
+    sim_time += dt
     sim_time = float(f"{sim_time:.5f}")
     time_display.config(text=f"{sim_time}s")
 
@@ -69,7 +70,9 @@ def update_all(root_display, canvas_display, time_display, particles_pos, partic
 
     draw_particles(particles_pos, particles_cha, canvas_display)
 
-    print(particles[0].x, particles[1].x, particles[2].x, particles[3].x, particles[4].x)
+    for i in particles:
+        print(i.x,end=" ")
+    print()
 
     root_display.after(update_interval, update_all, root_display, canvas_display, time_display, particles_pos, particles_cha)
 
@@ -79,9 +82,9 @@ def draw_particles(particles_pos, particles_cha, canvas_display):
 
             if particles_cha[i] == 0: 
                 fill = 'green'
-            elif particles_cha[i] == 1:
+            elif particles_cha[i] > 0:
                 fill = 'blue'
-            elif particles_cha[i] == -1:
+            elif particles_cha[i] < 0:
                 fill = 'red'
 
             canvas_display.create_oval(particles_pos[i]+(CANVAS_WIDTH//2-5), (CANVAS_HEIGHT//2-5), particles_pos[i]+(CANVAS_WIDTH//2+5), (CANVAS_HEIGHT//2+5), fill=fill)
