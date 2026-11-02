@@ -29,15 +29,18 @@ class Particles():
         self.velocity += self.acceleration * dt
 
     def applied_force(self, other_particle_pos, other_particle_cha):
-        return (ELECTROSTATIC_CONSTANT*self.charge*other_particle_cha)*(self.x-other_particle_pos)/abs(self.x-other_particle_pos)**3
+        if self.x-other_particle_pos != 0:
+            return (ELECTROSTATIC_CONSTANT*self.charge*other_particle_cha)*(self.x-other_particle_pos)/abs(self.x-other_particle_pos)**3
+        else:
+            return (ELECTROSTATIC_CONSTANT*self.charge*other_particle_cha)*(self.x-other_particle_pos)/0.00001
 
 
 # All the particles
 electron1 = Particles(0, 1, -1)
 proton1 = Particles(50, 100, 1)
 proton2 = Particles(-50, 100, 1)
-neutron1 = Particles(100, 100, 1)
-neutron2 = Particles(-100, 100, 1)
+neutron1 = Particles(100, 100, 0)
+neutron2 = Particles(-100, 100, 0)
 
 particles = [electron1, proton1, proton2, neutron1, neutron2]
 
